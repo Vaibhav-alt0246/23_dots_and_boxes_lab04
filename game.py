@@ -52,7 +52,11 @@ class DotsAndBoxes:
                 continue
 
             before = set(self.board.completed)
-            self.board.add_line(orientation, row, col)
+            try:
+                self.board.add_line(orientation, row, col)
+            except ValueError:
+                print("Invalid or already-used move.")
+                continue
             newly_completed = completed_boxes(self.board, before)
 
             if newly_completed:
