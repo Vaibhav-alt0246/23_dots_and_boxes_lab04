@@ -61,6 +61,10 @@ Include tests for at least:
 
 Document the changes you made and any design decisions that were important to the solution.
 
+### Testing notes
+
+The test suite uses Python's standard-library `unittest` framework. Tests cover rule-level horizontal and vertical moves, repeated-line state preservation, box scoring and extra turns through `DotsAndBoxes`, and terminal game-over behavior. Board construction remains responsible for state and completion, `rules.py` validates moves, and `game.py` coordinates input, scoring, and turns; the tests exercise each responsibility at its boundary without duplicating production validation.
+
 ## Constraints
 
 - Keep the project modular.

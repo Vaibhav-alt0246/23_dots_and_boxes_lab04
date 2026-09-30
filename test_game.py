@@ -89,5 +89,41 @@ class ConfigurableBoardTests(unittest.TestCase):
         self.assertEqual((game.board.rows, game.board.cols), (3, 3))
 
 
+class GameFlowTests(unittest.TestCase):
+    def test_completing_box_scores_and_keeps_same_player_turn(self):
+        game = DotsAndBoxes(board_size=2)
+        missing = ("H", 0, 0)
+        for orientation, row_count, col_count in (
+            ("H", game.board.rows + 1, game.board.cols),
+            ("V", game.board.rows, game.board.cols + 1),
+        ):
+            for row in range(row_count):
+                for col in range(col_count):
+                    if (orientation, row, col) != missing:
+                        game.board.add_line(orientation, row, col)
+
+        with patch("builtins.input", side_effect=["H 0 0"]), redirect_stdout(StringIO()) as output:
+            game.run()
+
+        self.assertEqual(game.scores, [1, 0])
+        self.assertEqual(game.current, 0)
+        self.assertIn("plays again", output.getvalue())
+
+    def test_completed_game_prints_game_over_and_stops_input(self):
+        game = DotsAndBoxes(board_size=2)
+        moves = [
+            *(f"H {row} {col}" for row in range(3) for col in range(2)),
+            *(f"V {row} {col}" for row in range(2) for col in range(3)),
+        ]
+
+        with patch("builtins.input", side_effect=moves) as input_mock:
+            with redirect_stdout(StringIO()) as output:
+                game.run()
+
+        self.assertTrue(game.board.is_complete())
+        self.assertIn("Game over!", output.getvalue())
+        self.assertEqual(input_mock.call_count, len(moves))
+
+
 if __name__ == "__main__":
     unittest.main()

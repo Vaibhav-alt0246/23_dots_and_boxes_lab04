@@ -1,9 +1,28 @@
 import unittest
 
 from board import Board
+from rules import valid_move
 
 
 class AddLineValidationTests(unittest.TestCase):
+    def test_valid_horizontal_move_is_accepted(self):
+        board = Board()
+
+        self.assertTrue(valid_move(board, "H", 0, 1))
+        board.add_line("H", 0, 1)
+
+        self.assertTrue(board.horizontal[0][1])
+        self.assertFalse(valid_move(board, "H", 0, 1))
+
+    def test_valid_vertical_move_is_accepted(self):
+        board = Board()
+
+        self.assertTrue(valid_move(board, "V", 1, 0))
+        board.add_line("V", 1, 0)
+
+        self.assertTrue(board.vertical[1][0])
+        self.assertFalse(valid_move(board, "V", 1, 0))
+
     def test_line_dimensions_match_board_size(self):
         board = Board(rows=3, cols=3)
 
@@ -42,9 +61,12 @@ class AddLineValidationTests(unittest.TestCase):
     def test_rejects_repeated_line(self):
         board = Board()
         board.add_line("H", 0, 0)
+        state_before = [row[:] for row in board.horizontal]
 
         with self.assertRaises(ValueError):
             board.add_line("H", 0, 0)
+
+        self.assertEqual(board.horizontal, state_before)
 
 
 if __name__ == "__main__":
