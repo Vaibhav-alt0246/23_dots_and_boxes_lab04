@@ -7,9 +7,20 @@ class Board:
         self.completed = set()
 
     def add_line(self, orientation, row, col):
+        if orientation not in {"H", "V"}:
+            raise ValueError("orientation must be 'H' or 'V'")
+
         if orientation == "H":
+            if not (0 <= row <= self.rows and 0 <= col < self.cols):
+                raise ValueError("horizontal line coordinates are out of range")
+            if self.horizontal[row][col]:
+                raise ValueError("line has already been used")
             self.horizontal[row][col] = True
         else:
+            if not (0 <= row < self.rows and 0 <= col <= self.cols):
+                raise ValueError("vertical line coordinates are out of range")
+            if self.vertical[row][col]:
+                raise ValueError("line has already been used")
             self.vertical[row][col] = True
         self._update_completed()
 
