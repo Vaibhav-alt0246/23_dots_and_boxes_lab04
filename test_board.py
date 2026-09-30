@@ -4,6 +4,12 @@ from board import Board
 
 
 class AddLineValidationTests(unittest.TestCase):
+    def test_line_dimensions_match_board_size(self):
+        board = Board(rows=3, cols=3)
+
+        self.assertEqual(board.line_dimensions("H"), (4, 3))
+        self.assertEqual(board.line_dimensions("V"), (3, 4))
+
     def test_rejects_invalid_orientation(self):
         board = Board()
 

@@ -6,18 +6,28 @@ class Board:
         self.vertical = [[False] * (cols + 1) for _ in range(rows)]
         self.completed = set()
 
+    def line_dimensions(self, orientation):
+        """Return the row and column limits for a line orientation."""
+        if orientation == "H":
+            return self.rows + 1, self.cols
+        if orientation == "V":
+            return self.rows, self.cols + 1
+        raise ValueError("orientation must be 'H' or 'V'")
+
     def add_line(self, orientation, row, col):
         if orientation not in {"H", "V"}:
             raise ValueError("orientation must be 'H' or 'V'")
 
         if orientation == "H":
-            if not (0 <= row <= self.rows and 0 <= col < self.cols):
+            line_rows, line_cols = self.line_dimensions(orientation)
+            if not (0 <= row < line_rows and 0 <= col < line_cols):
                 raise ValueError("horizontal line coordinates are out of range")
             if self.horizontal[row][col]:
                 raise ValueError("line has already been used")
             self.horizontal[row][col] = True
         else:
-            if not (0 <= row < self.rows and 0 <= col <= self.cols):
+            line_rows, line_cols = self.line_dimensions(orientation)
+            if not (0 <= row < line_rows and 0 <= col < line_cols):
                 raise ValueError("vertical line coordinates are out of range")
             if self.vertical[row][col]:
                 raise ValueError("line has already been used")
